@@ -50,6 +50,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AspLine.cs" />
+    <Compile Include="Models\AspPage.cs" />
+    <Compile Include="Modules\ASPParser.cs" />
+    <Compile Include="Modules\SuspectBlock.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
