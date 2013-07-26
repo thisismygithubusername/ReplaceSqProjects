@@ -128,7 +128,7 @@ namespace FindandReplaceSql
         {
             //Wrtie sone cray thing to display it highlighted
             RichDisplay.Clear();
-            RichDisplay.Text = line;
+            TextHighlighter.TextHighlight(RichDisplay, line);
             RichDisplay.Focus();
         }
 
