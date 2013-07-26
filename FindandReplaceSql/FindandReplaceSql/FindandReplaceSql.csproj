@@ -53,9 +53,12 @@
     <Compile Include="Models\AspLine.cs" />
     <Compile Include="Models\AspPage.cs" />
     <Compile Include="Modules\ASPParser.cs" />
+    <Compile Include="Modules\LineAnalyzer.cs" />
     <Compile Include="Modules\SuspectBlock.cs" />
+    <Compile Include="Modules\TextHighlighter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewHelpers.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

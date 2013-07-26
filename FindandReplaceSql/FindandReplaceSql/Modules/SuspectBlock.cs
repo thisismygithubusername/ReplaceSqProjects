@@ -26,5 +26,6 @@ namespace FindandReplaceSql.Modules
                        ? page.Lines.GetRange(LineNumber - 1, 10)
                        : page.Lines.GetRange(LineNumber - 1, page.Lines.Count - LineNumber);
         }
+
     }
 }

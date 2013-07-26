@@ -20,24 +20,125 @@ namespace FindandReplaceSql
             InitializeComponent();
         }
 
-        private string FileName { get; set; }
-        private Stream FileStream { get; set; }
-        private AspPage Page { get; set; }
-        private int SuspectViewIndex { get; set; }
+        private Button PrevButton
+        {
+            get { return this.button6; }
+        }
+
+        private Button NextButton
+        {
+            get { return this.button5; }
+        }
+
+        private Button WrapButton
+        {
+            get { return this.button3; }
+        }
+
+        private Button CustomButton
+        {
+            get { return this.button4; }
+        }
+
+        private RichTextBox RichDisplay
+        {
+            get { return this.richTextBox1; }
+        }
+
+        private string FileName
+        {
+            get; set;
+        }
+
+        private Stream FileStream
+        {
+            get; set;
+        }
+
+        private AspPage Page
+        {
+            get; set;
+        }
+
+        private int SuspectViewIndex
+        {
+            get; set;
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var browser = new OpenFileDialog();
-            browser.InitialDirectory = @"C:\IIS\wwwroot\mb-dev";
-
+            browser.InitialDirectory = @"C:\IIS\wwwroot\mb-dev\Web\ASP";
             browser.ShowDialog();
             FileName = browser.FileName;
             DisplayTxtInBox(this.textBox1, browser.FileName);
         }
 
+        //Search button 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ClearAllAData();
+            label2.ForeColor = Color.Blue;
+            label2.Text = FileName.Split('\\').Last();
+            Page = ASPParser.ExamFile(FileName);
+            this.textBox4.Clear();
+            this.textBox4.Text = Page.NumberofSuspects + "";
+            DumpFileWithColors();
+            PrintSuspectBlock(0);
+        }
 
-        /************************* helpers *****************************/
+        private void ClearAllAData()
+        {
+            listBox1.Items.Clear();
+            listBox2.Items.Clear();
+            richTextBox1.Clear();
+            Page = null;
+            SuspectViewIndex = 0;
 
+        }
+
+        private void PrintSuspectBlock(int index)
+        {
+            listBox1.FormatListBoxWithColor(Color.Red);
+            if (Page.SuspectLines.Count > 0 && isValidIndex(index))
+            {
+                foreach (var line in new SuspectBlock(Page, Page.SuspectLines[index]).SqlBlock)
+                {
+                    listBox1.Items.Add(line);
+                }
+                AdjustDisplays(index);
+            }
+        }
+
+        private bool isValidIndex(int index)
+        {
+            return index >= 0 && index < Page.SuspectLines.Count - 1;
+        }
+
+        private void AdjustDisplays(int index)
+        {
+            this.textBox3.Clear();
+            this.textBox3.Text = (index + 1) + "";
+            listBox2.SetTopIndexAndSelect(Page.SuspectLines[index] - 1);
+            label6.Text = @"Conflict View: " + (index + 1);
+            LoadRichTxt(Page.Lines[Page.SuspectLines[index] - 1].Line);
+        }
+
+        private void LoadRichTxt(string line)
+        {
+            //Wrtie sone cray thing to display it highlighted
+            RichDisplay.Clear();
+            RichDisplay.Text = line;
+            RichDisplay.Focus();
+        }
+
+        private void DumpFileWithColors()
+        {
+            foreach (var aspline in Page.Lines)
+            {
+                this.listBox2.Items.Add(aspline);
+            }
+        }
         private void DisplayTxtInBox(TextBox box, string txt)
         {
             box.Clear();
@@ -49,56 +150,65 @@ namespace FindandReplaceSql
 
         }
 
-        //Search button 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            label2.ForeColor = Color.Blue;
-            label2.Text = FileName.Split('\\').Last();
-            //  + ": " + FileName;
-            this.Page = ASPParser.ExamFile(FileName);
-            DumpFileWithColors();
-            PrintSuspectBlock(0);
-        }
-
-        private void PrintSuspectBlock(int index)
-        {
-            this.listBox1.ForeColor = Color.Red;
-            this.listBox1.HorizontalScrollbar = true;
-            this.listBox1.Items.Clear();
-
-            if (Page.SuspectLines.Count > 0)
-            {
-                foreach (var line in new SuspectBlock(Page, Page.SuspectLines[index]).SqlBlock)
-                {
-                    this.listBox1.Items.Add(line);
-                }
-                this.listBox2.TopIndex = Page.SuspectLines[index] - 1;
-                this.listBox2.SelectedIndex = Page.SuspectLines[index] - 1;
-                this.label6.Text = "Conflict View: " + (index + 1 );
-            }
-        }
-
-        private void DumpFileWithColors()
-        {
-            foreach (var aspline in Page.Lines)
-            {
-                this.listBox2.Items.Add(aspline);
-            }
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             this.AutoSize = true;
-            label6.Text = "Conflict View: " + SuspectViewIndex + 1;
+            this.label4.Text = @"Conflict View:";
+            this.textBox4.Clear();
+            this.textBox4.Text = Page.SuspectLines + "";
         }
 
+        //Next 
         private void button5_Click(object sender, EventArgs e)
         {
-            SuspectViewIndex++;
-            PrintSuspectBlock(SuspectViewIndex);
+            if (SuspectViewIndex < Page.SuspectLines.Count)
+            {
+                SuspectViewIndex++;
+                PrintSuspectBlock(SuspectViewIndex);
+            }
         }
 
-        private void label4_Click(object sender, EventArgs e)
+        //Previous
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (SuspectViewIndex > 0)
+            {
+                SuspectViewIndex--;
+                PrintSuspectBlock(SuspectViewIndex);
+            }
+        }
+
+        //
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //Todo 
+        //CustomReplacetxtbox
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //Wrap
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //Suspect line 
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        //Suspeck Block display 
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+        //CustomReplace
+        private void button4_Click(object sender, EventArgs e)
         {
 
         }
@@ -128,6 +238,25 @@ namespace FindandReplaceSql
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+            var value = textBox3.Text;
+            var intval = int.Parse(value);
+            if(intval > 0 && intval <= Page.NumberofSuspects )
+            {
+                SuspectViewIndex = intval - 1;
+                PrintSuspectBlock(SuspectViewIndex);
+            }
+            RichDisplay.Focus();           
+        }
+
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
         {
 
         }
