@@ -30,6 +30,11 @@ namespace FindandReplaceSql.Models
             Linetxt.RemoveAt(index);
         }
 
+        public override string ToString()
+        {
+            return Linetxt.Aggregate("", (current, ch) => current + ch + "");
+        }
+
     }
  
 }
