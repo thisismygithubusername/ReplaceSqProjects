@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using FindandReplaceSql.Models;
 using FindandReplaceSql.Extensions;
+using FindandReplaceSql.Models.ViewOutput;
 
 namespace FindandReplaceSql.Modules
 {
     public class ColoredStringBuilder
     {
-        private const char Quote = '"';
-        private const char Amp = '&';
         private string Txt { get; set; }
         private int QuotesCount { get; set; }
         private int AmpCount { get; set; }
@@ -54,11 +53,6 @@ namespace FindandReplaceSql.Modules
             return new LineCharacter('"', Color.SaddleBrown);
         }
          
-        private LineCharacter AmpGen()
-        {
-            return new LineCharacter('&', Color.Black);
-        }
-
         private LineCharacter TxtGen(char symbol, bool strtype)
         {
             return strtype ? new LineCharacter(symbol, Color.Coral) : new LineCharacter(symbol, Color.Black);
@@ -73,11 +67,11 @@ namespace FindandReplaceSql.Modules
 
             public SuspectLine Line { get; set; }
 
-            public SuspectLine Refine()
+            public AnalyzedLine Refine()
             {
-                var linepieces = Line.ToString().Split(Amp);
+                var linepieces = Line.ToString().Split('&');
                 var colorsLists = new List<Color>();
-
+                var plists = new List<string>();
                 if (linepieces.Count() > 1)
                 {
                     for (int i = 0; i < linepieces.Count(); i++)
@@ -86,7 +80,12 @@ namespace FindandReplaceSql.Modules
 
                         if (!IsChunkStringType(current) && !ContainsSqlandStr(current))
                         {
-                            colorsLists.Add(current.Contains("sqlClean") ? Color.Green : Color.Red);
+                            var isCleaned = current.Contains("sqlClean(");
+                            colorsLists.Add(isCleaned ? Color.Green : Color.Red);
+                            if (!isCleaned)
+                            {
+                                plists.Add(linepieces[i]);
+                            }
                         }
                         else
                         {
@@ -95,7 +94,7 @@ namespace FindandReplaceSql.Modules
                     }
                 }
 
-                return ReColor(colorsLists);
+                return ReColor(colorsLists, plists);
             }
 
             private bool IsChunkStringType(string chunk)
@@ -108,7 +107,7 @@ namespace FindandReplaceSql.Modules
                 return chunk.Contains("SQL") || chunk.Contains("str");
             }
 
-            private SuspectLine ReColor(List<Color> colorList)
+            private AnalyzedLine ReColor(List<Color> colorList, List<string> replacements )
             {
                 int currentwordindex = 0;
                 if (colorList.Any())
@@ -125,7 +124,7 @@ namespace FindandReplaceSql.Modules
                         }
                     }
                 }
-                return Line;
+                return new AnalyzedLine(Line.Linetxt);
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FindandReplaceSql.Models;
 using FindandReplaceSql.Modules;
+using FindandReplaceSql.Extensions;
 
 namespace FindandReplaceSql
 {
@@ -65,6 +67,10 @@ namespace FindandReplaceSql
             get; set;
         }
 
+        private List<string> ToBeWrapped { get; set; }
+
+        private int WrapIndex { get; set; }
+
         private void button1_Click(object sender, EventArgs e)
         {
             var browser = new OpenFileDialog();
@@ -80,7 +86,7 @@ namespace FindandReplaceSql
             ClearAllAData();
             label2.ForeColor = Color.Blue;
             label2.Text = FileName.Split('\\').Last();
-            Page = ASPParser.ExamFile(FileName);
+            Page = ASPParser.CreatePageFromFile(FileName);
             this.textBox4.Clear();
             this.textBox4.Text = Page.NumberofSuspects + "";
             DumpFileWithColors();
@@ -89,7 +95,6 @@ namespace FindandReplaceSql
 
         private void ClearAllAData()
         {
-            listBox1.Items.Clear();
             listBox2.Items.Clear();
             richTextBox1.Clear();
             Page = null;
@@ -99,12 +104,11 @@ namespace FindandReplaceSql
 
         private void PrintSuspectBlock(int index)
         {
-            listBox1.FormatListBoxWithColor(Color.Red);
             if (Page.SuspectLines.Count > 0 && isValidIndex(index))
             {
                 foreach (var line in new SuspectBlock(Page, Page.SuspectLines[index]).SqlBlock)
                 {
-                    listBox1.Items.Add(line);
+                    listBox2.Items.Add(line);
                 }
                 AdjustDisplays(index);
             }
@@ -124,12 +128,24 @@ namespace FindandReplaceSql
             LoadRichTxt(Page.Lines[Page.SuspectLines[index] - 1].Line);
         }
 
+        private void DisplayToBeWraped(string word)
+        {
+            this.richTextBox2.Clear();
+            this.richTextBox2.Text = word;
+        }
+
         private void LoadRichTxt(string line)
         {
-            //Wrtie sone cray thing to display it highlighted
             RichDisplay.Clear();
-            TextHighlighter.TextHighlight(RichDisplay, line);
+            var coloredLine = new LineAnalyzer { Line = line }.BuildColoredLine();
+            ToBeWrapped = coloredLine.PossibleReplacements;
+
+            foreach (var ch in coloredLine.Linetxt)
+            {
+                RichDisplay.AppendText(ch.Value.ToString(CultureInfo.InvariantCulture), ch.Color);
+            }
             RichDisplay.Focus();
+            DisplayToBeWraped(ToBeWrapped.Any() ? ToBeWrapped[0] : "");
         }
 
         private void DumpFileWithColors()
@@ -139,6 +155,7 @@ namespace FindandReplaceSql
                 this.listBox2.Items.Add(aspline);
             }
         }
+
         private void DisplayTxtInBox(TextBox box, string txt)
         {
             box.Clear();
@@ -257,6 +274,11 @@ namespace FindandReplaceSql
 
 
         private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox2_TextChanged(object sender, EventArgs e)
         {
 
         }

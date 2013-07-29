@@ -10,13 +10,6 @@ namespace FindandReplaceSql.Modules
 {
     public class TextHighlighter
     {
-        public void doSHit(RichTextBox textBox)
-        {
-            //textBox.SelectionStart = first;
-            //textBox.SelectionLength = length;
-            //scroll to the caret
-            //textBox.ScrollToCaret();            
-        }
 
         public static void TextHighlight(RichTextBox box, string line)
         {

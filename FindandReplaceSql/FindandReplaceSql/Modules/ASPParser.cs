@@ -11,12 +11,27 @@ namespace FindandReplaceSql.Modules
 {
     public class ASPParser
     {
-        public static AspPage ExamFile(string fileName)
-        {  
-            return GetPageFromStream(new StreamReader(fileName));
+        public ASPParser(string fileName)
+        {
+            FileName = fileName;
         }
 
-        private static AspPage GetPageFromStream(StreamReader fileStream )
+        public string FileName
+        {
+            get; set;
+        }
+
+        public static AspPage CreatePageFromFile(string fileName)
+        {  
+            return new ASPParser(fileName).GetPageFromStream(new StreamReader(fileName));
+        }
+
+        public AspPage ParsePage()
+        {
+            return GetPageFromStream(new StreamReader(FileName));
+        }
+
+        private  AspPage GetPageFromStream(StreamReader fileStream )
         {
             string line = "";
             var pageLines = new List<AspLine>();

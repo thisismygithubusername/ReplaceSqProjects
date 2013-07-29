@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FindandReplaceSql.Models;
+using FindandReplaceSql.Models.ViewOutput;
 using MbUnit.Framework;
 
 
@@ -34,7 +35,7 @@ namespace FindandReplaceSql.Modules
             return str.Count(f => f == c);
         }
 
-        public SuspectLine BuildColoredLine()
+        public AnalyzedLine BuildColoredLine()
         {
             return new ColoredStringBuilder(Line, CountQuotes(), CountAnds()).PaintFirstRun().Refine();
         }
