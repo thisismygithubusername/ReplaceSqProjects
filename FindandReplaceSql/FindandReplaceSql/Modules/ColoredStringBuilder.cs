@@ -78,7 +78,7 @@ namespace FindandReplaceSql.Modules
                     {
                         var current = linepieces[i].RemoveWhiteSpace();
 
-                        if (!IsChunkStringType(current) && !ContainsSqlandStr(current))
+                        if (!IsChunkStringType(current) && !ContainsSqlandStr(current) && !ContainsWordsToAvoid(current))
                         {
                             var isCleaned = current.Contains("sqlClean(");
                             colorsLists.Add(isCleaned ? Color.Green : Color.Red);
@@ -107,7 +107,19 @@ namespace FindandReplaceSql.Modules
                 return chunk.Contains("SQL") || chunk.Contains("str");
             }
 
-            private AnalyzedLine ReColor(List<Color> colorList, List<string> replacements )
+            private bool ContainsWordsToAvoid(string chunk)
+            {
+                foreach (var word in WordsToAvoid)
+                {
+                    if (chunk.Contains(word))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            private AnalyzedLine ReColor(List<Color> colorList, List<string> replacements)
             {
                 int currentwordindex = 0;
                 if (colorList.Any())
@@ -124,9 +136,11 @@ namespace FindandReplaceSql.Modules
                         }
                     }
                 }
-                return new AnalyzedLine(Line.Linetxt);
+                return new AnalyzedLine(Line.Linetxt, replacements);
             }
-        }
 
+            private readonly string[] WordsToAvoid =  {"step", "Step", "Sep"};
+        }
     }
+
 }

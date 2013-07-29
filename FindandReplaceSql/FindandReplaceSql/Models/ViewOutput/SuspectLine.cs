@@ -14,7 +14,11 @@ namespace FindandReplaceSql.Models.ViewOutput
         {
             Linetxt = new List<LineCharacter>();
         }
-        public List<LineCharacter> Linetxt { get; set; }
+
+        public List<LineCharacter> Linetxt
+        {
+            get; set;
+        }
 
         public void AddChar(char c, Color color)
         {

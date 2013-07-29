@@ -30,5 +30,10 @@ namespace FindandReplaceSql.Extensions
                 box.SelectionColor = box.ForeColor;
             
         }
+
+        public static string WrapWithSqlClean(this string str)
+        {
+            return "sqlClean(" + str + ")";
+        }
     }
 }
