@@ -108,6 +108,15 @@ namespace FindandReplaceSql
             }
         }
 
+        //Refine 
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Page.RefineSuspects();
+            this.textBox4.Clear();
+            this.textBox4.Text = Page.NumberofSuspects + "";
+            AdjustDisplays(0);
+        }
+
         private void ClearAllAData()
         {
             listBox2.Items.Clear();
@@ -119,7 +128,7 @@ namespace FindandReplaceSql
 
         private bool IsValidIndex(int index)
         {
-            return index >= 0 && index < Page.SuspectLines.Count - 1;
+            return index >= 0 && index < Page.SuspectLines.Count;
         }
 
         //VIEW SETTER
@@ -128,12 +137,14 @@ namespace FindandReplaceSql
             if (Page.SuspectLines.Count > 0 && IsValidIndex(index))
             {
                 this.textBox3.Clear();
+                //IHATE THIS SHIT IT NEEDS TO GET FIXED 
                 this.textBox3.Text = (index + 1) + "";
-                listBox2.SetTopIndexAndSelect(Page.SuspectLines[index] - 1);
+                listBox2.SetTopIndexAndSelect(Page.SuspectLines[index]);
                 label6.Text = @"Conflict View: " + (index + 1);
-                LoadRichTxt(Page.Lines[Page.SuspectLines[index] - 1].Line);
+                LoadRichTxt(Page.Lines[Page.SuspectLines[index]].Line);
             }
         }
+
         //VIEW SETTER
         private void LoadRichTxt(string line)
         {
@@ -146,6 +157,7 @@ namespace FindandReplaceSql
             RichDisplay.Focus();
             SetWrapDisplay(Wrapper.Any() ? Wrapper.GetCurrent() : "");
         }
+
         //View Setter
         private void SetWrapDisplay(string word)
         {
@@ -242,7 +254,6 @@ namespace FindandReplaceSql
             {
                 button5_Click(null, null);
             }
-
         }
 
         private void richTextBox2_TextChanged(object sender, EventArgs e)
@@ -309,6 +320,10 @@ namespace FindandReplaceSql
 
         }
 
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
 
     }
 

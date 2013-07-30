@@ -13,14 +13,10 @@ namespace FindandReplaceSql.Modules
     public class ColoredStringBuilder
     {
         private string Txt { get; set; }
-        private int QuotesCount { get; set; }
-        private int AmpCount { get; set; }
 
-        public ColoredStringBuilder(string txt, int quotes, int amps)
+        public ColoredStringBuilder(string txt)
         {
             Txt = txt;
-            QuotesCount = quotes;
-            AmpCount = amps;
         }
 
         public PaintedString PaintFirstRun()

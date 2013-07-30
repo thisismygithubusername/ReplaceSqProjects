@@ -15,6 +15,11 @@ namespace FindandReplaceSql.Modules
     {
         public LineAnalyzer() { }
 
+        public LineAnalyzer(string line)
+        {
+            Line = line;
+        }
+
         public string Line 
         { 
             get; set;
@@ -37,7 +42,7 @@ namespace FindandReplaceSql.Modules
 
         public AnalyzedLine BuildColoredLine()
         {
-            return new ColoredStringBuilder(Line, CountQuotes(), CountAnds()).PaintFirstRun().Refine();
+            return new ColoredStringBuilder(Line).PaintFirstRun().Refine();
         }
     }
 }

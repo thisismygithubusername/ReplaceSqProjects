@@ -39,7 +39,7 @@ namespace FindandReplaceSql.Modules
 
             for (var count = 1; ((line = fileStream.ReadLine()) != null); count++)
             {
-                if (CheckIfContainsSql(line)){ suspectLines.Add(count);}
+                if (CheckIfContainsSql(line)){ suspectLines.Add(count-1);}
                 pageLines.Add(new AspLine { Line = line, LineNumber = count });
             }
             fileStream.Close();
