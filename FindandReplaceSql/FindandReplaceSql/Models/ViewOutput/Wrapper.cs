@@ -20,7 +20,7 @@ namespace FindandReplaceSql.Models.ViewOutput
 
         public string GetCurrent()
         { 
-            return Words[CurrentIndex];
+            return Words[CurrentIndex].Trim();
         }
 
         public bool Next()
@@ -51,6 +51,16 @@ namespace FindandReplaceSql.Models.ViewOutput
         public bool Any()
         {
             return Words.Count >= 1;
+        }
+
+        public Change Wrap()
+        {
+            if (Words.Any())
+            {
+                var old = Words[CurrentIndex].Trim();
+                return new Change(old, "sqlClean(" + old +")");
+            }
+            return null;
         }
     }
 }

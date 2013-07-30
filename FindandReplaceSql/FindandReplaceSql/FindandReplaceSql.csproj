@@ -59,6 +59,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Change.cs" />
     <Compile Include="Models\ViewOutput\AnalyzedLine.cs" />
     <Compile Include="Models\AspLine.cs" />
     <Compile Include="Models\AspPage.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Modules\ASPParser.cs" />
     <Compile Include="Modules\ColoredStringBuilder.cs" />
     <Compile Include="Modules\LineAnalyzer.cs" />
+    <Compile Include="Modules\ProgramSession.cs" />
     <Compile Include="Modules\SuspectBlock.cs" />
     <Compile Include="Modules\TextHighlighter.cs" />
     <Compile Include="Program.cs" />

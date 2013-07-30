@@ -23,47 +23,41 @@ namespace FindandReplaceSql
             InitializeComponent();
         }
 
-        private Button PrevButton
+        private TextBox TbFileName
         {
-            get { return this.button6; }
+            get { return this.textBox1; }
         }
 
-        private Button NextButton
+        private TextBox TbConflictNumber
         {
-            get { return this.button5; }
+            get { return this.textBox3; }
         }
 
-        private Button WrapButton
+        private TextBox TbTotalConflictNum
         {
-            get { return this.button3; }
+            get { return this.textBox4; }
         }
 
-        private Button CustomButton
+        private ListBox LbFileView
         {
-            get { return this.button4; }
+            get { return this.listBox2; }
+        }
+        private ListBox LbChangedView
+        {
+            get { return this.listBox1; }
         }
 
-        private RichTextBox RichDisplay
+        private RichTextBox RichDisplayLine
         {
             get { return this.richTextBox1; }
         }
 
+        private RichTextBox RichDisplayWrap
+        {
+            get { return this.richTextBox2; }
+        }
+
         private string FileName
-        {
-            get; set;
-        }
-
-        private Stream FileStream
-        {
-            get; set;
-        }
-
-        private AspPage Page
-        {
-            get; set;
-        }
-
-        private int SuspectViewIndex
         {
             get; set;
         }
@@ -78,18 +72,16 @@ namespace FindandReplaceSql
             get { return this.label10; }
         }
 
-        private Wrapper Wrapper { get; set; }
 
-        private int WrapIndex { get; set; }
+        private ProgramSession Session { get; set; }
 
         //Select Button 
         private void button1_Click(object sender, EventArgs e)
         {
-            var browser = new OpenFileDialog();
-            browser.InitialDirectory = @"C:\IIS\wwwroot\mb-dev\Web\ASP";
+            var browser = new OpenFileDialog {InitialDirectory = @"C:\IIS\wwwroot\mb-dev\Web\ASP"};
             browser.ShowDialog();
             FileName = browser.FileName;
-            DisplayTxtInBox(this.textBox1, browser.FileName);
+            DisplayTxtInBox(TbFileName, FileName);
         }
 
         //Search button 
@@ -98,11 +90,15 @@ namespace FindandReplaceSql
             if (!string.IsNullOrEmpty(FileName))
             {
                 ClearAllAData();
+
                 label2.ForeColor = Color.Blue;
                 label2.Text = FileName.Split('\\').Last();
-                Page = ASPParser.CreatePageFromFile(FileName);
-                this.textBox4.Clear();
-                this.textBox4.Text = Page.NumberofSuspects + "";
+
+                Session = new ProgramSession();
+                Session.ParsePage(FileName);
+                TbTotalConflictNum.Clear();
+                TbTotalConflictNum.Text = Session.Page.NumberofSuspects + "";
+
                 DumpFileWithColors();
                 AdjustDisplays(0);
             }
@@ -111,64 +107,66 @@ namespace FindandReplaceSql
         //Refine 
         private void button8_Click(object sender, EventArgs e)
         {
-            Page.RefineSuspects();
-            this.textBox4.Clear();
-            this.textBox4.Text = Page.NumberofSuspects + "";
+            Session.Page.RefineSuspects();
+
+            TbTotalConflictNum.Clear();
+            TbTotalConflictNum.Text = Session.Page.NumberofSuspects + "";
+
             AdjustDisplays(0);
         }
 
         private void ClearAllAData()
-        {
+        {;
             listBox2.Items.Clear();
             richTextBox1.Clear();
-            Page = null;
-            SuspectViewIndex = 0;
-
+            Session= null;
         }
 
         private bool IsValidIndex(int index)
         {
-            return index >= 0 && index < Page.SuspectLines.Count;
+            return index >= 0 && index < Session.Page.SuspectLines.Count;
         }
 
         //VIEW SETTER
         private void AdjustDisplays(int index)
         {
-            if (Page.SuspectLines.Count > 0 && IsValidIndex(index))
+            if (Session.Page.SuspectLines.Count > 0 && IsValidIndex(index))
             {
-                this.textBox3.Clear();
-                //IHATE THIS SHIT IT NEEDS TO GET FIXED 
-                this.textBox3.Text = (index + 1) + "";
-                listBox2.SetTopIndexAndSelect(Page.SuspectLines[index]);
+                TbConflictNumber.Clear();
+                TbConflictNumber.Text = (index + 1) + "";
+
+                LbFileView.SetTopIndexAndSelect(Session.Page.SuspectLines[index]);
+
                 label6.Text = @"Conflict View: " + (index + 1);
-                LoadRichTxt(Page.Lines[Page.SuspectLines[index]].Line);
+
+                LoadRichTxt(Session.Page.Lines[Session.Page.SuspectLines[index]].Line);
             }
         }
 
         //VIEW SETTER
         private void LoadRichTxt(string line)
         {
-            RichDisplay.Clear();
+            RichDisplayLine.Clear();
+
             var coloredLine = new LineAnalyzer { Line = line }.BuildColoredLine();
-            Wrapper = new Wrapper(coloredLine.PossibleReplacements);
+            Session.Wrapper = new Wrapper(coloredLine.PossibleReplacements);
 
-            coloredLine.Write(RichDisplay);
+            coloredLine.Write(RichDisplayLine);
 
-            RichDisplay.Focus();
-            SetWrapDisplay(Wrapper.Any() ? Wrapper.GetCurrent() : "");
+            SetWrapDisplay(Session.Wrapper.Any() ? Session.Wrapper.GetCurrent() : "");
         }
 
         //View Setter
         private void SetWrapDisplay(string word)
         {
-            this.richTextBox2.Clear();
-            this.richTextBox2.Text = word;
-            this.CurrentReplacement.Text = Wrapper.CurrentIndex + 1 + "";
+            RichDisplayWrap.Clear();
+            RichDisplayWrap.Text = word;
+            CurrentReplacement.Text = Session.Wrapper.CurrentIndex + 1 + "";
         }
 
         private void DumpFileWithColors()
         {
-            foreach (var aspline in Page.Lines)
+            foreach (var aspline in Session.Page.Lines)
             {
                 this.listBox2.Items.Add(aspline);
             }
@@ -180,17 +178,12 @@ namespace FindandReplaceSql
             box.Text = txt;
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             this.AutoSize = true;
             this.label4.Text = @"Conflict View:";
             this.textBox4.Clear();
-            this.textBox4.Text = Page.SuspectLines + "";
+            this.textBox4.Text = Session.Page.SuspectLines + "";
             this.TotalReplacements.Text = "0";
             this.CurrentReplacement.Text = "0";
         }
@@ -198,37 +191,48 @@ namespace FindandReplaceSql
         //Next 
         private void button5_Click(object sender, EventArgs e)
         {
-            if (SuspectViewIndex + 1 <= Page.SuspectLines.Count)
+            if (Session.SuspectViewIndex + 1 <= Session.Page.SuspectLines.Count)
             {
-                SuspectViewIndex++;
-                AdjustDisplays(SuspectViewIndex);
+                Session.SuspectViewIndex++;
+                AdjustDisplays(Session.SuspectViewIndex);
             }
         }
 
         //Previous
         private void button6_Click(object sender, EventArgs e)
         {
-            if (SuspectViewIndex > 0)
+            if (Session.SuspectViewIndex > 0)
             {
-                SuspectViewIndex--;
-                AdjustDisplays(SuspectViewIndex);
+                Session.SuspectViewIndex--;
+                AdjustDisplays(Session.SuspectViewIndex);
             }
         }
 
         //Wrap
         private void button3_Click(object sender, EventArgs e)
         {
-            //Todo
-            //var wrapped = Wrapper.wrap();
-            if (Wrapper.Next())
+            var wrapValue = Session.WrapAndSave();
+            if (wrapValue > 0)
             {
-                SetWrapDisplay(Wrapper.GetCurrent());
+                if (wrapValue == 2)
+                {
+                    LbChangedView.Items.Add(Session.ChangedLines.Last());
+                    this.RichDisplayWrap.Clear();
+                    button5_Click(null, null);
+                }
+                else
+                {
+                    Session.Wrapper.Next();
+                    SetWrapDisplay(Session.Wrapper.GetCurrent());
+                }
             }
             else
             {
                 button5_Click(null, null);
             }
+            
         }
+
 
         //Suspect line 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -245,10 +249,9 @@ namespace FindandReplaceSql
         //Skip 
         private void button7_Click(object sender, EventArgs e)
         {
-            //iterate over to next word 
-            if(Wrapper.Next())
+            if (Session.Wrapper.Next())
             {
-                SetWrapDisplay(Wrapper.GetCurrent());
+                SetWrapDisplay(Session.Wrapper.GetCurrent());
             }
             else
             {
@@ -295,12 +298,12 @@ namespace FindandReplaceSql
         {
             var value = textBox3.Text;
             var intval = int.Parse(value);
-            if(intval > 0 && intval <= Page.NumberofSuspects )
+            if (intval > 0 && intval <= Session.Page.NumberofSuspects)
             {
-                SuspectViewIndex = intval - 1;
-                AdjustDisplays(SuspectViewIndex);
+                Session.SuspectViewIndex = intval - 1;
+                AdjustDisplays(Session.SuspectViewIndex);
             }
-            RichDisplay.Focus();           
+            RichDisplayLine.Focus();           
         }
 
 
@@ -321,6 +324,11 @@ namespace FindandReplaceSql
         }
 
         private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
 
         }

@@ -40,7 +40,7 @@ namespace FindandReplaceSql.Models
             return FormatLineNumer(LineNumber) + " : " + Line;
         }
 
-        private string FormatLineNumer(int lineNumber)
+        public string FormatLineNumer(int lineNumber)
         {
             if (lineNumber < 10)
             {
