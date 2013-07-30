@@ -72,11 +72,11 @@ namespace FindandReplaceSql.Modules
                 {
                     for (int i = 0; i < linepieces.Count(); i++)
                     {
-                        var current = linepieces[i].RemoveWhiteSpace();
+                        var current = linepieces[i].Trim();
 
-                        if (!IsChunkStringType(current) && !ContainsSqlandStr(current) && !ContainsWordsToAvoid(current))
+                        if (!IsProhibitedtoClean(current))
                         {
-                            var isCleaned = current.Contains("sqlClean(");
+                            var isCleaned = IsCleaned(current);
                             colorsLists.Add(isCleaned ? Color.Green : Color.Red);
                             if (!isCleaned)
                             {
@@ -93,6 +93,31 @@ namespace FindandReplaceSql.Modules
                 return ReColor(colorsLists, plists);
             }
 
+            public bool IsCleaned(string chunk)
+            {
+                return chunk.Contains("sqlInject") || chunk.Contains("sqlClean(");
+            }
+
+            private bool IsProhibitedtoClean(string chunk)
+            {
+                if (IsChunkStringType(chunk))
+                    return true;
+                if (ContainsSqlandStr(chunk))
+                    return true;
+                if (ContainsWordsToAvoid(chunk))
+                    return true;
+                if (IsUnderscore(chunk))
+                    return true;
+                if (ContainsOnlyOneQuote(chunk))
+                    return true;
+                return false;
+            }
+
+            private bool ContainsOnlyOneQuote(string chunk)
+            {
+                return countChar('"', chunk) == 1;
+            }
+
             private bool IsChunkStringType(string chunk)
             {
                 return chunk.First().Equals('"') && chunk.Last().Equals('"');
@@ -101,6 +126,16 @@ namespace FindandReplaceSql.Modules
             private bool ContainsSqlandStr(string chunk)
             {
                 return chunk.Contains("SQL") || chunk.Contains("str");
+            }
+
+            private bool IsUnderscore(string chunk)
+            {
+                return chunk.Trim().Equals("_");
+            }
+
+            private int countChar(char c, string str)
+            {
+                return str.Count(f => f == c);
             }
 
             private bool ContainsWordsToAvoid(string chunk)

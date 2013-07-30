@@ -160,6 +160,7 @@ namespace FindandReplaceSql
         private void SetWrapDisplay(string word)
         {
             RichDisplayWrap.Clear();
+            this.textBox5.Text = word;
             RichDisplayWrap.Text = word;
             CurrentReplacement.Text = Session.Wrapper.CurrentIndex + 1 + "";
         }
@@ -186,6 +187,7 @@ namespace FindandReplaceSql
             this.textBox4.Text = Session.Page.SuspectLines + "";
             this.TotalReplacements.Text = "0";
             this.CurrentReplacement.Text = "0";
+            this.richTextBox2.Font = new Font("Arial", 18);
         }
 
         //Next 
@@ -217,6 +219,7 @@ namespace FindandReplaceSql
                 if (wrapValue == 2)
                 {
                     LbChangedView.Items.Add(Session.ChangedLines.Last());
+                    this.textBox2.Text = LbChangedView.Items.Count.ToString(CultureInfo.InvariantCulture);
                     this.RichDisplayWrap.Clear();
                     button5_Click(null, null);
                 }
@@ -329,6 +332,16 @@ namespace FindandReplaceSql
         }
 
         private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
         {
 
         }
