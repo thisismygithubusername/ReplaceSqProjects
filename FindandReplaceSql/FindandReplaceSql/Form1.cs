@@ -38,6 +38,11 @@ namespace FindandReplaceSql
             get { return this.textBox4; }
         }
 
+        private TextBox TbWrapDisplay
+        {
+            get { return this.textBox5; }
+        }
+
         private ListBox LbFileView
         {
             get { return this.listBox2; }
@@ -52,10 +57,6 @@ namespace FindandReplaceSql
             get { return this.richTextBox1; }
         }
 
-        private RichTextBox RichDisplayWrap
-        {
-            get { return this.richTextBox2; }
-        }
 
         private string FileName
         {
@@ -159,9 +160,9 @@ namespace FindandReplaceSql
         //View Setter
         private void SetWrapDisplay(string word)
         {
-            RichDisplayWrap.Clear();
+            TbWrapDisplay.Clear();
             this.textBox5.Text = word;
-            RichDisplayWrap.Text = word;
+            TbWrapDisplay.Text = word;
             CurrentReplacement.Text = Session.Wrapper.CurrentIndex + 1 + "";
         }
 
@@ -187,7 +188,7 @@ namespace FindandReplaceSql
             this.textBox4.Text = Session.Page.SuspectLines + "";
             this.TotalReplacements.Text = "0";
             this.CurrentReplacement.Text = "0";
-            this.richTextBox2.Font = new Font("Arial", 18);
+            this.TbWrapDisplay.Font = new Font("Arial", 30F);
         }
 
         //Next 
@@ -214,13 +215,29 @@ namespace FindandReplaceSql
         private void button3_Click(object sender, EventArgs e)
         {
             var wrapValue = Session.WrapAndSave();
+            PostWrapAction(wrapValue);
+        }
+        //CustomReplace
+        //Todo make  a class that count parens and suggests wraps
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var selected = TbWrapDisplay.SelectedText;
+            if (!string.IsNullOrWhiteSpace(selected))
+            {
+                var wrapValue = Session.WrapAndSave(selected);
+                PostWrapAction(wrapValue);
+            }
+        }
+
+        private void PostWrapAction(int wrapValue)
+        {
             if (wrapValue > 0)
             {
                 if (wrapValue == 2)
                 {
                     LbChangedView.Items.Add(Session.ChangedLines.Last());
                     this.textBox2.Text = LbChangedView.Items.Count.ToString(CultureInfo.InvariantCulture);
-                    this.RichDisplayWrap.Clear();
+                    this.TbWrapDisplay.Clear();
                     button5_Click(null, null);
                 }
                 else
@@ -233,18 +250,11 @@ namespace FindandReplaceSql
             {
                 button5_Click(null, null);
             }
-            
         }
 
 
         //Suspect line 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        //CustomReplace
-        private void button4_Click(object sender, EventArgs e)
         {
 
         }
@@ -344,6 +354,11 @@ namespace FindandReplaceSql
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            new FileWriter(Session, FileName).WriteChangesToFile();
         }
 
     }

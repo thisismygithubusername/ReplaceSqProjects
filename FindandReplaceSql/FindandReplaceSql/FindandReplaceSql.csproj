@@ -69,6 +69,7 @@
     <Compile Include="Models\ViewOutput\Wrapper.cs" />
     <Compile Include="Modules\ASPParser.cs" />
     <Compile Include="Modules\ColoredStringBuilder.cs" />
+    <Compile Include="Modules\FileWriter.cs" />
     <Compile Include="Modules\LineAnalyzer.cs" />
     <Compile Include="Modules\ProgramSession.cs" />
     <Compile Include="Modules\SuspectBlock.cs" />

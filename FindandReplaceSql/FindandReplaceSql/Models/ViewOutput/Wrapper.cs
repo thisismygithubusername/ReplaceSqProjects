@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FindandReplaceSql.Extensions;
 
 namespace FindandReplaceSql.Models.ViewOutput
 {
@@ -12,12 +13,14 @@ namespace FindandReplaceSql.Models.ViewOutput
         {
             Words = words;
             CurrentIndex = 0;
+            WrapedLast = false;
         }
 
         public List<string> Words { get; set; }
 
         public int CurrentIndex { get; set; }
-
+        public bool WrapedLast { get; set; }
+        
         public string GetCurrent()
         { 
             return Words[CurrentIndex].Trim();
@@ -55,10 +58,29 @@ namespace FindandReplaceSql.Models.ViewOutput
 
         public Change Wrap()
         {
-            if (Words.Any())
+            if (Words.Any() && ! WrapedLast)
             {
+                if (CurrentIndex.Equals(Words.Count - 1))
+                {
+                    WrapedLast = true;
+                }
                 var old = Words[CurrentIndex].Trim();
                 return new Change(old, "sqlClean(" + old +")");
+            }
+            return null;
+        }
+        //Todo 
+        public Change Wrap(string custom)
+        {
+            if (Words.Any() && !WrapedLast)
+            {
+                if (CurrentIndex.Equals(Words.Count - 1))
+                {
+                    WrapedLast = true;
+                }
+                var old = Words[CurrentIndex].Trim();
+                var customReplace = custom.WrapWithSqlClean();
+                return new Change(old, old.Replace(custom, customReplace));
             }
             return null;
         }

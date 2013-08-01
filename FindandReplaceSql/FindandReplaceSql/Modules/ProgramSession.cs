@@ -41,8 +41,19 @@ namespace FindandReplaceSql.Modules
         public int WrapAndSave()
         {
             var wrapped = Wrapper.Wrap();
+            return AnalyzeWrapAttempt(wrapped);
+           
+        }
 
-            if (wrapped == null)
+        public int WrapAndSave(string custom)
+        {
+            var wrapped = Wrapper.Wrap(custom);
+            return AnalyzeWrapAttempt(wrapped);
+        }
+
+        private int AnalyzeWrapAttempt(Change wrapped)
+        {
+            if (wrapped == null || string.IsNullOrEmpty(wrapped.Old))
             {
                 return 0;
             }
@@ -60,7 +71,12 @@ namespace FindandReplaceSql.Modules
                 return 2;
             }
             return 1;
-
         }
+
+        public void WriteChanges()
+        {
+            
+        }
+
     }
 }

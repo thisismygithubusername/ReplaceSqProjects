@@ -45,7 +45,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.button7 = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -56,6 +55,7 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.button8 = new System.Windows.Forms.Button();
             this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button9 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -218,15 +218,6 @@
             this.textBox4.TabIndex = 22;
             this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Location = new System.Drawing.Point(432, 510);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(282, 39);
-            this.richTextBox2.TabIndex = 23;
-            this.richTextBox2.Text = "";
-            this.richTextBox2.TextChanged += new System.EventHandler(this.richTextBox2_TextChanged);
-            // 
             // button7
             // 
             this.button7.Location = new System.Drawing.Point(532, 557);
@@ -311,17 +302,28 @@
             // 
             // textBox5
             // 
-            this.textBox5.Location = new System.Drawing.Point(78, 529);
+            this.textBox5.Location = new System.Drawing.Point(432, 520);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(321, 20);
+            this.textBox5.Size = new System.Drawing.Size(277, 20);
             this.textBox5.TabIndex = 33;
             this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(162, 588);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 34;
+            this.button9.Text = "button9";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1511, 798);
+            this.Controls.Add(this.button9);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.textBox2);
@@ -332,7 +334,6 @@
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -377,7 +378,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.RichTextBox richTextBox2;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
@@ -388,6 +388,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Button button9;
     }
 }
 

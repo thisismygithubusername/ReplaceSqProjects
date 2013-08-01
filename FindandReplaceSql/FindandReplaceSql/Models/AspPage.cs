@@ -15,6 +15,8 @@ namespace FindandReplaceSql.Models
             SuspectLines = suspectedLines;
         }
 
+        public string FileName { get; set; }
+
         public List<AspLine> Lines { get; set; }
 
         public List<int> SuspectLines { get; set; } 
