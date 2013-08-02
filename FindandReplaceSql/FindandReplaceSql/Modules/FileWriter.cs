@@ -30,7 +30,7 @@ namespace FindandReplaceSql.Modules
 
         private string BuildSavePath()
         {
-            var path = Path.Combine(SavePath, "SqlCleaneFiles");
+            var path = Path.Combine(SavePath, "SqlCleanedFiles");
             if (Directory.Exists(path))
             {
                 return path;
